@@ -1,0 +1,213 @@
+1. Extract Hive metadata
+2. Extract Sentry roles
+3. Bulk DistCp historical data
+4. Register tables in Databricks
+5. Start streaming ingestion in Databricks
+6. Run dual pipelines
+7. Incremental partition sync
+8. Validate
+9. Cutover
+
+
+
+Hive table -> HDFS directory of Avro/Parquet files -> DistCp to cloud object storage -> register/rewrite in Databricks
+
+
+History load: DistCp older partitions / folders from HDFS to cloud storage in parallel.
+Catch-up sync: Re-run DistCp incrementally for the latest partitions while Hadoop is still active.
+Streaming cutover: Start Databricks ingestion from the live source, validate parity, then switch producers/consumers.
+
+A practical pattern is:
+
+copy old partitions first
+
+validate counts / file sizes / partition completeness
+
+copy hot partitions more frequently
+
+leave the most recent active partitions for the final sync window
+
+-------------------
+
+Extract Hive location and partition map.
+
+Bulk DistCp old data to cloud storage.
+
+Register / validate in Databricks.
+
+Start the Databricks streaming pipeline from the live source.
+
+Keep Hadoop and Databricks in parallel during validation.
+
+Final sync the latest HDFS partitions.
+
+Freeze source writes briefly, convert/register final state, then switch.
+
+----------
+
+
+Extract Hive metadata and Sentry access model.
+
+Grant DistCp read access to HDFS Hive-managed table path and cloud write access to landing storage.
+
+DistCp historical Parquet partitions from oldest to newest into a raw external landing path. DistCp is designed for this kind of large distributed copy.
+
+In Databricks, create Bronze Delta as the target lakehouse layer.
+
+Start the new Databricks streaming pipeline writing directly to Bronze Delta, not to the raw Parquet landing path.
+
+Continue incremental/final sync of the latest historical HDFS partitions into the raw landing area.
+
+Load/reconcile the final historical gap into Bronze Delta. For Parquet, use CONVERT TO DELTA only on stable paths, because writes arriving after conversion starts may not be reflected.
+
+Build/rebuild Silver from Bronze and Gold from Silver.
+
+Apply and validate Unity Catalog permissions before consumer cutover. Unity Catalog supports CONVERT TO DELTA for Parquet in external locations it manages.
+
+Cut over readers/writers to Databricks.
+
+----
+
+
+Keep Hadoop running while historical DistCp completes.
+
+Start Databricks Bronze streaming.
+
+Run final DistCp for latest historical partitions.
+
+Load final historical gap into Bronze Delta.
+
+Validate counts and watermarks.
+
+Enable Silver/Gold jobs in Databricks.
+
+Grant final permissions.
+
+Switch consumers to Databricks tables.
+
+Stop old Hadoop reader/writer jobs.
+
+-------------------
+
+Step	What happens	Example
+1	Read Hive metadata	SHOW CREATE TABLE raw_db.orders_events
+2	Export Sentry mapping	roles/groups/object access
+3	DistCp history	HDFS Parquet → s3://company-raw-landing/orders_events/
+4	Create Bronze Delta	main.bronze.orders_events
+5	Start live stream	Kafka → Bronze Delta
+6	Final DistCp sync	latest HDFS partitions
+7	Load final history gap	raw Parquet → Bronze Delta
+8	Build Silver	Bronze → Silver
+9	Build Gold	Silver → Gold
+10	Apply UC security	GRANT SELECT, MODIFY
+11	Cut over	consumers switch to Databricks
+
+----------------
+
+
+| Step | Action                                                                         | Why                                                       |
+| ---- | ------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| 1    | Analyze Hive DDL, schema, partitions, watermark column, security               | You need the exact source structure and cutover logic     |
+| 2    | Create Bronze Delta target in Databricks                                       | Final single source of truth must exist first             |
+| 3    | Define streaming start boundary / cutover watermark                            | Avoid overlap between historical backfill and live stream |
+| 4    | Grant DistCp access to HDFS source and cloud landing path                      | Needed for file copy                                      |
+| 5    | DistCp historical data from oldest to newest partitions into raw cloud landing | Fast bulk movement                                        |
+| 6    | Start Databricks live streaming into Bronze Delta                              | New data begins landing directly in final target          |
+| 7    | Backfill copied historical data from raw landing into Bronze Delta             | Load only data older than streaming boundary              |
+| 8    | Run final incremental sync for the latest Hadoop partitions                    | Capture the tail before shutdown                          |
+| 9    | Reconcile / deduplicate / validate                                             | Ensure no gap and no overlap                              |
+| 10   | Stop Hadoop flow                                                               | Only after parity is confirmed                            |
+| 11   | Build / switch Silver and Gold from Databricks Bronze                          | Downstream cutover                                        |
+
+
+---------------
+
+
+So for your Bronze history in HBase, the safest design is:
+
+Start Kafka → Databricks Bronze at T0
+
+Take an HBase snapshot around the same boundary for consistency
+
+Backfill HBase history < T0 into Bronze Delta
+
+Deduplicate on a stable business/message key
+
+Keep Kafka as the live path; stop relying on HBase for new Bronze after cutover
+
+My recommended end-to-end plan
+Phase 1: preparation
+
+Create Databricks target tables first:
+
+main.bronze.raw_messages
+
+main.silver.curated_events
+
+main.gold.standardized_metrics
+
+Also define the cutover timestamp T0, the business key, and the event-time column for each layer.
+
+-------------------
+Phase 2: start the new live path
+
+Start Kafka → Databricks Bronze at T0. Do not keep pushing new raw data into Hadoop as the primary path after that point.
+
+------------------------------------
+
+Phase 3: historical Bronze from HBase
+
+For HBase, do two things in parallel:
+
+take a snapshot for a consistent point-in-time copy / rollback anchor
+
+run a bounded historical extraction from HBase for records < T0 into Bronze Delta
+
+The snapshot is your safety and consistency anchor because HBase snapshots are immutable and low-impact; exporting a snapshot copies HFiles, logs, and snapshot metadata to the destination filesystem.
+--------------
+Phase 4: historical Silver from HDFS
+
+Move curated HDFS history into Databricks Silver.
+
+If it is Parquet and stable, use in-place conversion or clone-oriented migration
+
+If it is Avro or another format, land and rewrite into Delta
+
+Databricks explicitly supports CONVERT TO DELTA for Parquet and recommends CLONE if the source keeps receiving updates during migration.
+
+Phase 5: historical Gold from HDFS
+
+Do the same for Gold history from standardized HDFS into Databricks Gold.
+
+Phase 6: final reconciliation
+
+Validate row counts, time ranges, and duplicates across all three target layers, then stop the old Hadoop-side flow.
+
+-----------------
+
+
+
+Kafka live
+   -> Databricks Bronze Delta  (from T0 onward)
+
+HBase historical (< T0)
+   -> snapshot for consistency / rollback
+   -> parallel row-range extraction
+   -> Databricks Bronze Delta
+
+Curated HDFS historical (< T0)
+   -> DistCp / landing
+   -> Delta Silver
+
+Standardized HDFS historical (< T0)
+   -> DistCp / landing
+   -> Delta Gold
+
+
+
+
+
+
+Phase 5: historical Gold from HDFS
+
+Do the same for Gold history from standardized HDFS into Databricks Gold.
