@@ -1,0 +1,10 @@
+can you give me the DFD. in this include only the direct flow with RTM and also for batch processing. no need to give parallel flow with AWS and GCP. just flow for one cloud.
+Review the flow below:-
+
+RTM
+---
+RIO->MSK Kafka-> Databricks RTM [Bronze state(filter(), pre validation, union from feedback Kafka, Processed Kafka)->Silver state(Regularize fields, update transaction/reference state)->Gold state(transformations,lookups from reference state, transaction state)] -> post to MSK kafka-> Databricks autoscale cluster[  SDP processing(Load configs from Dynamodb -> Pre submission validation -> Acquire lock from Hazlecast cloud)] -> Winner posts to MQ and processed kafka -> Databricks autoscale cluster [SDP proessing (fetch feedback from MQ -> push to Feedback kafka) -> Databricks autoscale cluster[SDP processing( fetch from processed kafka-> load to dynamodb/delta tables (synced lakebase tables)
+
+Batch processing
+----
+Rio -> MSK Kafka -> Databricks job( Bronze delta(all messages)->silver delta(Filtered, pre validation and filter)->Gold delta(Transformation/lookups,final dataset)-> Job2(primary AWS, pre submission validation, fetch configs from dynamodb)-> post to SFTP/MQ/XML/Excel, the required formats. -> job 3(feedback receives from Regulator-> update the Feedback data in the Delta tables/Dynamodb)
