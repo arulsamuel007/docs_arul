@@ -8,3 +8,27 @@ RIO->MSK Kafka-> Databricks RTM [Bronze state(filter(), pre validation, union fr
 Batch processing
 ----
 Rio -> MSK Kafka -> Databricks job( Bronze delta(all messages)->silver delta(Filtered, pre validation and filter)->Gold delta(Transformation/lookups,final dataset)-> Job2(primary AWS, pre submission validation, fetch configs from dynamodb)-> post to SFTP/MQ/XML/Excel, the required formats. -> job 3(feedback receives from Regulator-> update the Feedback data in the Delta tables/Dynamodb)
+
+
+DFD 1 — RTM Real-Time Flow
+Inbound zone — Solace RIO → MSK Kafka raw-trades topic. The Feedback Kafka topic also enters here from the bottom, feeding back into the RTM union.
+Databricks RTM Cluster A — Three clearly labelled states:
+
+Bronze state — union() merges raw-trades and feedback-kafka. filter() runs pre-validation (~0ms). The evt_type router branches: "trade" rows proceed forward, "state_update" rows silently update RocksDB without emitting
+Silver state — transformWithState with three sub-blocks: Regularize fields (normalize notional, dates, instruments), Transaction state (dup detect, sequence checks via ValueState/ListState), Reference state (counterparty exposure via MapState, broadcast Lakebase config)
+Gold state — Transformations (regulator format from Lakebase), Reference lookups (LEI, instrument mapping from RocksDB broadcast), forEachWriter emits to validated-trades MSK Kafka
+
+SDP Cluster 1 (Submission) — four sequential steps: Load configs from DynamoDB → Pre-submission validation (DQ L3) → Acquire Hazelcast CPMap lock (winner/loser) → Winner posts to IBM MQ + processed-trades Kafka
+SDP Cluster 2 (Feedback) — Fetches feedback from MQ → pushes to feedback-inbound Kafka → which loops back to RTM Cluster A's union() — the feedback loop closed
+SDP Cluster 3 (Persistence) — Reads processed-trades topic (separate consumer group) → writes to DynamoDB, Delta tables, Lakebase
+
+DFD 2 — Batch Processing Flow
+Inbound — Solace RIO → MSK Kafka all-messages topic. Batch tiers shown: 15min / 1hr / 1day triggers.
+Job 1 — Bronze → Silver → Gold Delta:
+
+Bronze Delta — readStream from Kafka, writes all records as-is to bronze.all_messages Delta (no filtering, full fidelity for replay)
+Silver Delta — readStream(Bronze), applies filter + pre-validation, PASS → silver.filtered_trades, FAIL → silver.dq_failures (7yr retention)
+Gold Delta — readStream(Silver), two parallel blocks: Transformations (regulator format, field enrichment, from DynamoDB config) and Lookups (stream-static join on LEI/instrument from Lakebase). Output: gold.final_dataset partitioned by date/instrument/counterparty
+
+Job 2 — Pre-submission + Delivery — Fetch configs from DynamoDB → Pre-submission validation → Multi-format delivery to four channels: SFTP, IBM MQ, XML, Excel — all routing to the Regulator → Write submission audit record to Delta + DynamoDB
+Job 3 — Feedback — Receives regulator ack/reject via webhook or SFTP poll → dedup + classify (ACK/REJECT/TIMEOUT) → updates gold.regulator_acks Delta + DynamoDB status → REJECT triggers resubmit flag picked up by Job 2 on next scheduled run
