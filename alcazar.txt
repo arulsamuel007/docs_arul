@@ -1,0 +1,69 @@
+Alcazar: An Effective Solution to Accelerate Databricks Migration
+
+Assisting your organization in migrating from the legacy EDW & CDW platforms to the Lakehouse with less risk and less effort required
+
+How migrations become unexpectedly complex
+
+Most data modernization projects begin with an old EDW platform that has been serving organizations for years, becoming costly to support and maintain, difficult to scale, and unsuitable for advanced analytics and artificial intelligence applications. Migrating to Databricks makes sense, but how do you get there without interrupting operations?
+
+A migration process carried out manually becomes an obvious source of risks since teams need to sort out a large number of complex components, such as SQL queries, procedures, and ETL scripts, which could be dependent on each other and developed in the environments that may have a fundamentally different logic. That means long hours of work and more room for errors.
+
+This is the challenge that Alcazar is built to address.
+
+Functions of Alcazar
+
+Alcazar is an accelerator for modernization, designed specifically to ease migration from legacy EDW/CDW platforms to Databricks. It is a natively-built solution that concentrates on four key domains – analysis, code migration, data migration, and data validation.
+
+Migration of legacy code, migration of full/incremental data loads, and processing of big datasets in parallel are some of its functionalities. The solution also has in-built validation based on aggregates and hashing, which will let you check the equivalence of source data and what is loaded to Databricks. This solution works via Databricks Apps, leveraging Lakebase-based configuration.
+
+Migration from platforms such as Teradata, Oracle, SQL Server, Azure Synapse, Snowflake, SAS and Hadoop/Hive are supported.
+
+Alcazar is a Brickbuilder certified solution provided by Databricks.
+
+Working principles of Alcazar
+
+1. Analyzer – understand the landscape first
+
+The Alcazar Analyzer solution assists teams in assessing the landscape of the source environment prior to beginning migration operations. By analyzing the platform usage and the storage and compute consumption, the analyzer provides these insights on Databricks dashboards, which enables teams to design an effective migration strategy. The Alcazar Analyzer integrates with the source system to collect metadata of the scoped objects, providing valuable information for assessing complexity, identifying platform debt, tracking lineage, and designing a Databricks migration strategy.
+
+2. Code Migrator – convert legacy objects at scale
+
+Using AI technologies provided by Databricks, the Alcazar Code Migrator allows for the rapid conversion of legacy objects and scripts for Databricks Unity Catalog. With Alcazar Code Migrator, users get the capability to migrate objects, select model configuration and run migrations selectively or batchwise, before deploying them through the Alcazar Code Executor.
+
+
+3. Data Migrator – Move Data Without Affecting The Project Timeline
+
+Alcazar Data Migrator transfers historical as well as incremental data from the legacy system to the Databricks Unity Catalog tables. The Alcazar Data Migrator utilizes Spark-based workflows and filter-based loads to ensure efficiency during the migration, grouping tables based on their size so that they can be processed using appropriately sized clusters.
+
+4. Data Validator – Validation before Cutover
+
+Alcazar Data Validator assists in validating the source data with the destination data in preparation for cutover. Alcazar Data Validator automates data validation by conducting two-pass validation via hash functions at the table level with row/column validation. The validator also conducts aggregate function validations, such as sums, average, minimums, maximums, and NULL values. It generates an AI/BI report on validation, validates using filters, and maps columns when schema changes are identified.
+
+What Makes Alcazar Unique
+
+Certified by Databricks – Alcazar is a certified Brickbuilder solution. That means your team gets an extra assurance that the solution aligns with Databricks’ ecosystem.
+
+Native to Databricks – Alcazar is fully native in Databricks. Your team will not need to set up any VMs, tools from other vendors, or complicated integration layers to make it run.
+
+Deploy Fast Using Databricks Apps – Alcazar is distributed via Databricks Apps in your Databricks workspace. This way, teams get access to the software without going through lengthy installation processes and approvals.
+
+Artificial Intelligence-Powered Code Transformation – Alcazar makes use of Databricks' AI foundation models to provide an intelligent transformation of legacy code rather than relying on inflexible rule sets. Your team gets flexibility in adopting new models over time, yet LLM usage stays controlled with AI Gateway and LLM as Judge.
+
+Module Independent Workflows – Unlike stitching various tools together, Alcazar offers independent workflows for each of the core modules it consists of, i.e., Analyzer, Code Migrator, Data Migrator, and Data Validator. As it is developed on PySpark, Alcazar ensures parallel data migrations while Delta Lake enables ACID-compliant data migration in a highly scalable environment where it can be performed within minutes or even seconds depending on the number of data partitions.
+
+Better Validation for More Confidence – In addition to offering simple aggregation of statistics during the process, Alcazar uses two passes of hashing validation in order to detect any row and column level difference that may be difficult to identify during manual processes.
+
+Less Configuration with Lakebase – Lakebase allows Alcazar’s configuration and metadata to be managed in a highly scalable backend managed and serverless environment capable of scaling up during active periods and shutting down when idle.
+
+
+In summary, Alcazar gives teams an integrated approach to handling data migration on Databricks.
+
+Concluding remarks
+
+Legacy migration has been perceived as an endeavor that takes time, involves risks, and demands extensive manual intervention. Alcazar is designed to make this journey more organized through enabling teams to conduct analysis, migrate code quickly, transfer data effectively, and validate results prior to production.
+
+For companies intending to migrate their EDW environment to Databricks, Alcazar provides an easier solution.
+
+In the case where the objective is modernization with reduced risks and minimal rework, Alcazar is the answer.
+
+Alcazar has been developed by LTM.

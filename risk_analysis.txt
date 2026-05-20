@@ -1,0 +1,128 @@
+Risk Sentinel: An Early Warning System for Banks
+
+Abstract
+Clarity and timeliness of presentation are crucial attributes of the precursors of risks that banks must possess. In this study, I have designed an Early Warning System that allows for risk signals to be detected, collected and prioritized before serious credit problems arise.
+
+Introduction: The Problem Banks Always Face
+Day by day banks receive many tiny signals about risks associated with different operations, like late payments, sectoral performance drops, or unusual behavior of the vendors reflected in data of various kind. Each one taken separately can be irrelevant to the overall situation, but in combination they can suggest that there are some problems arising. What holds them back from responding effectively is not the absence of data, but the fragmentation, infrequency or low value of those signals. Thus, the issue becomes not only of identification, but also of coordination: combining all the relevant information in time to react.
+
+Risk Sentinel
+
+Risk Sentinel is a form of agent-based Early Warning System designed for detecting, relating, and prioritizing risk signals before they evolve into serious issues in the domain of credits.
+
+Instead of using only rule-based approaches, Risk Sentinel utilizes a group of agents operating in parallel to detect various types of risk signals across a variety of data sources both internal and external.
+
+External Risk Trigger Agent – Monitors market information, industry developments, credit agencies data, and news feeds (Yahoo Finance, Bloomberg, CRISIL) in order to spot at-risk customers prior to any internal identification.
+
+Internal Risk Trigger Agent – Searches for possible risks through CBS, LMS, CRM, and internal fraud databases such as KYC issues, associated risks of directors, and internal conflicts.
+
+Financial Risk Trigger Agent – Checks a wide range of financial indicators such as TNW erosion, increase in leverage, decline in EBITDA, and covenant violations.
+
+Payment Risk Trigger Agent – Identifies liquidity issues, recurring cheque returns, delayed payments, and signs of SMA migration.
+
+Operational Risk Trigger Agent – Reports on issues related to security perfection outstanding, audit overdue, ROC filing, and utility failure.
+
+Voice Analyst Agent – Analyzes customer voices to identify the presence of sentiments and signs of stress and possible underlying risks.
+
+Transaction Analysis Agent – Runs an extensive analysis of transactions and calculates the risk for SMA.
+
+All of these agents deliver their results to a Consolidated Alert Table which allows the bank to have an overall overview of risk signals about each customer. The Recommendation Agent offers action recommendations in accordance with the policy within a timeframe, while the Orchestrator Agent compiles a case file for the Relationship Manager.
+
+Five Dimensions of Credit Risk Management
+
+Credit risk monitoring must consider five dimensions at one time. Ignoring any of these five will leave the entire evaluation process incomplete.
+
+Character - Is the borrower exhibiting good character? (Good governance criteria, fraud flags, discipline with repayments)
+
+Capacity - Is there enough cash flow to meet interest requirements? (Ratios of cash flow, cheque dishonor, days overdue)
+
+Character - Is the borrower exhibiting good character? (Good governance criteria, fraud flags, discipline with repayments)
+
+Capacity - Is there enough cash flow to meet interest requirements? (Ratios of cash flow, cheque dishonor, days overdue)
+
+Collateral - Is the collateral still healthy? (Drawdown limits breaches, insurance expiry, loan-to-value ratios)
+
+Capital - Do the promoters have a significant equity position in the venture? (Net worth, leverage ratios, capital structure)
+
+Conditions - Is there a hostile environment for the business? (Media reports, industry changes, litigations, rating downgrades)
+
+A number of early warning systems cover just a few aspects of this matrix. The Risk Sentinel system monitors all five simultaneously without much manual input.
+
+Examples of Usage
+
+Below are three examples of situations where Risk Sentinel helps Relationship Manager identify issues early and determine the correct level of action.
+
+Example #1 – Company A: Early Signs of Financial Trouble
+
+Company A seems stable from the surface, but deeper analysis reveals increasing pressure.
+
+The last DPD for Company A stands at 36 days. It is probably not enough to cause a complete escalation for many banks, but the number itself is close enough to take action before the loan turns into an NPA after 90 days.
+
+This is when the action has the highest effect.
+
+Risk Sentinel brings together all payments, financial, and operational data in one case, which gives the Relationship Manager early warning signs of deterioration, helping banks to take preventive measures before turning their loans into NPAs.
+
+The point here is not only to detect the signal but also to be able to react promptly.
+
+Example #2 – Company B: Market Impact Without Any Imminent Default
+
+Decrease in the stock price is not an indication of default threat, however, it must be taken into consideration carefully.
+
+In the case of Company B, Risk Sentinel picks up a decrease in its stock price during the last 90 days. Such a signal would probably be classified as high severity by any regular system and trigger an automatic alert.
+
+Risk Sentinel gives a context to the signal before escalating it.
+
+Risk Sentinel analyzes the signal from the point of view of overall company financial health and discovers no red flags. Its revenue did not go down, there are no covenant issues, and the last reported DPD was 0 days.
+
+Company B is not escalated to an alert, it is simply put on a watch list. The Relationship Manager receives all necessary information about the case to form an opinion.
+
+Example 3 – Company C: Interrelated Risks Between Organizations
+
+This is an example of the benefits of using Risk Sentinel’s Knowledge Graph.
+
+Live media monitoring uncovers the news that the Board Member of Company X, Mr. David Miller, has been associated with an incident of corporate fraud. In a conventional system, Company X would be flagged as a red alert, and nothing else.
+
+Risk Sentinel goes one step further and analyzes interconnections between different organizations and people connected through the board of directors of Company X.
+
+The system uncovers that among other directors sitting in Company X’s board is the director of Company C, Mr. James Anderson, along with Mr. David Miller.
+
+Though this connection itself cannot point at any fraudulent activities within Company C, it still constitutes a signal in relation to good governance.
+
+Risk Sentinel brings the case forward to investigate further, flags high internal fraud risk, and creates a case report so that the Relationship Manager could review the exposure and proceed to the necessary measures.
+
+Some risks cannot be identified without considering relationships between organizations.
+
+Technical Architecture of Risk Sentinel: LTM's Blueverse and Databricks
+
+Risk Sentinel leverages LTM's Blueverse, an innovative low-code/no-code AI ecosystem with capabilities for reusable agents and agent integrations with agents created on Databricks.
+
+The combination of the two solutions offers orchestration, data foundation, governance, and delivery capabilities of Risk Sentinel.
+
+LTM's Blueverse – The AI Ecosystem
+
+No-code Foundry for building and deploying agents at scale
+
+Marketplace of plug-and-play reusable agents across different verticals and use cases
+
+Orchestration of the agents with governance, guardrails, and observability
+
+Integration with agents created using Databricks via A2A protocol and/or tools
+
+Databricks – The Data and AI Foundation
+
+Lakehouse – Data lake storage for payments, transactions, market data, voice recordings, and case file information
+
+Lakebase – Agent configuration management through configurable parameters and threshold settings
+
+AI Gateway – LLM guardrails, rate limits, and model governance controls
+
+LLM-as-Judge (Eval) – Evaluation of agent results and detection of hallucinations
+
+Databricks App – Delivery of the Risk Sentinel user interface to customers
+
+Row-Level Security (RLS) – Enterprise-level data governance and segregation of data access to the right people
+
+
+While Databricks delivers the data and AI foundation, Blueverse makes sure that the latter gets leveraged properly inside the organization.
+
+Risk Sentinel is built by LTM, utilizing LTM's Blueverse and Databricks.

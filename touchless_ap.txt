@@ -1,0 +1,83 @@
+Touchless AP: The End of Manual Invoice Processing
+
+An alternative that involves less manual processing than before
+
+The principle behind this alternative is the following: the invoice arrives, it gets analyzed, cross-verified with the purchase order and delivery notice, and approved for payment if everything is correct. There will be no need for manual analysis; finance professionals will only become involved in case some issues arise.
+
+This means much less manual input from your side, reduced email traffic, and almost no time wasted trying to reconcile data between different documents.
+
+All these benefits are available thanks to Touchless AP technology, which aims to make the whole invoice processing faster and more efficient.
+
+Why Is This Still Relevant for Your Finance Team?
+
+Processing one invoice may still take a lot of time for many companies, although it does not usually involve complicated decisions about whether to pay or not. Most of the issues are connected with too many manual operations, scattered across several tools, and numerous verifications.
+
+There is still a big number of finance teams who rely predominantly on manual invoicing and data processing. Invoices get entered manually, there are many discrepancies, and AP professionals may end up having to devote most of their time to solving exceptions rather than doing valuable work.
+
+It results in such typical problems as delayed payments, unnecessary penalties and interest, inability to get any discounts, bad relations with suppliers, and too much time devoted to routine rather than improvement.
+
+All the above issues come out of the fundamental operation of invoice processing: verification of purchase orders, goods receipt and invoices from suppliers.
+
+Touchless AP Workflow
+
+Touchless AP is an automated solution driven by AI to match three-party documents related to purchase orders, goods receipt notes, and supplier invoices with minimal involvement of humans involved.
+
+The workflow includes collecting data from the invoices, validating them against the source documents, applying tolerance thresholds, and forwarding only the real issues to the humans involved for resolving. In simple cases, there will be no delays or human interventions since the invoice will flow smoothly through the system.
+
+The purpose is quite obvious – let the system take care of routine things and humans focus on solving exceptions.
+
+Three Source Records for Approval of Any Invoice
+
+On a basic level, the accounts payable tries to resolve one single issue. It has to check whether it is worth paying a particular invoice.
+
+For this reason, there are three source documents to analyze during each invoice approval process. The Purchase Order provides details about items to buy and their prices. The Goods Receipt Note specifies the goods actually received from suppliers. The Supplier Invoice indicates the amount required to pay.
+
+If all three documents match, then no problem with approving such an invoice occurs. However, any discrepancy requires analyzing the reason behind it. That's why most of the time the invoice approval process stalls at this point.
+
+How It Works
+
+Step 1 - The Invoice Arrives – A vendor sends the invoice via email. The system automatically detects it so that no one needs to upload it manually.
+
+Step 2 - The Invoice is Extracted & Structured – The process identifies relevant invoice data elements such as line items, quantities, prices, taxes, and sums so they can be validated later on.
+
+Step 3 - The system verifies the match – The invoice data is compared against purchase orders and goods received data in the transaction system.
+
+Step 4 - If the match happens, it's all good – When all the differences are within predefined tolerance levels, the invoice status will be matched with details, and the AP can approve it right away.
+
+Step 5 - Otherwise, it's sent to the appropriate person – If something seems wrong, the system highlights the problem, explains what caused it, and forwards it to the relevant party to take action.
+
+The Tech Stack Behind The Solution — Databricks
+
+A fully unified solution built using a single Databricks stack can significantly simplify the overall integration effort.
+
+Databricks Apps – Hosts applications and Audit Portal (fully serverless and elastic)
+
+Lakebase: A transactional layer where accessing data occurs in milliseconds.
+
+Delta Lake: One single place where all invoices are stored along with their history, facilitating ACID transactions and time travel abilities.
+
+AI Gateway: An endpoint for LLMs where there are features such as rate limiting and safety precautions.
+
+LLM-as-Judge: Assessment of the performance of an agent in terms of correctness, comprehensiveness, and prevention of hallucinations.
+
+Key Benefits For Your Business
+
+Processing thousands of invoices without any human touch
+
+Faster invoice-to-pay process; payments are made on time, and discounts are collected
+
+No more fraud cases, duplicated invoices, and overpaid vendors
+
+Better control over your cash flow – payments are initiated only for matched invoices
+
+Your AP employees will spend less time on Excel and have more strategic work
+
+Full audit trail for every invoice from its arrival to release payments
+
+Final Thoughts
+
+AP departments have been working quietly behind the scenes for many years, settling bills with vendors, maintaining accurate records, and ensuring that the business moves forward. This needs to be done in a way that makes their job easier, rather than requiring yet more tedious spreadsheets and emails.
+
+This is precisely what Touchless AP seeks to do. It is not a solution that eliminates people from the equation. Instead, it is a solution designed to remove the tasks that do not require critical thinking so that AP professionals can devote themselves to activities that do. An individual invoice might seem inconsequential when automated, but across thousands each month, that translates to efficiencies and competitive advantages.
+
+Touchless AP was developed by LTM, leveraging Databricks.
